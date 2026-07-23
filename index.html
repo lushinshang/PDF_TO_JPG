@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="免費線上 PDF 轉 JPG 工具，純前端 100% 本地轉檔與下載，保護檔案隱私，支援分頁預覽與 ZIP 一鍵打包。">
+  <title>PDF 轉 JPG 線上免費轉換工具 (純前端安全防護)</title>
+  <meta name="theme-color" content="#e8e2d3">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a56ad' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E">
+
+  <!-- Security Headers -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';
+             script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+             style-src  'self' 'unsafe-inline' https://fonts.googleapis.com;
+             font-src   'self' https://fonts.gstatic.com;
+             img-src    'self' data: blob:;
+             worker-src blob:;">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Style -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Third-party Libraries via CDN，integrity 為 cdnjs 官方 SRI hash（已與本地重算比對一致）-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+          integrity="sha512-q+4liFwdPC/bNdhUpZx6aXDx/h77yEQtn4I1slHydcbZK34nLaR3cAeYSJshoxIOq3mjEf7xJE8YWIUHMn+oCQ=="
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+          integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"
+          integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw=="
+          crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+             aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        100% 瀏覽器本地運算 · 零上傳隱私防護
+      </div>
+      <h1>PDF 轉 JPG 圖片工具</h1>
+      <p class="description">拖曳或選擇上傳 PDF 檔案，將每一頁自動轉換為高品質 JPG 圖片並一鍵壓縮下載。</p>
+    </header>
+
+    <main>
+      <!-- Upload Zone -->
+      <section aria-label="上傳區域">
+        <!-- tabindex 讓鍵盤使用者可以 Tab 到此區域 -->
+        <div class="upload-card" id="drop-zone" role="button" tabindex="0"
+             aria-label="點擊或拖曳 PDF 檔案至此區域以上傳">
+          <input type="file" id="file-input" accept=".pdf,application/pdf"
+                 aria-label="選擇 PDF 檔案">
+          <div class="upload-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="upload-title">點擊選擇檔案 或 拖曳 PDF 至此處</div>
+          <div class="upload-subtitle">僅支援單檔 PDF 上傳</div>
+        </div>
+
+        <!-- Error Banner (flex 由 JS 控制) -->
+        <div class="error-banner" id="error-banner" role="alert" aria-live="assertive">
+          <span class="error-banner-msg" id="error-msg"></span>
+          <button class="error-close-btn" id="error-close" aria-label="關閉錯誤訊息">✕</button>
+        </div>
+
+        <!-- Progress & Status -->
+        <div class="status-section" id="status-section" aria-live="polite">
+          <div class="status-text">
+            <span id="status-message">正在讀取 PDF 檔案...</span>
+            <span id="status-percentage" aria-label="轉換進度">0%</span>
+          </div>
+          <div class="progress-container" role="progressbar" aria-valuenow="0"
+               aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Action & Downloads -->
+      <section class="action-header" id="action-header" aria-label="下載操作區">
+        <h2 class="action-title" id="page-count-title">轉檔完成頁面</h2>
+        <button class="btn-primary" id="btn-download-all">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          下載全部 JPG (ZIP)
+        </button>
+      </section>
+
+      <!-- Page Preview Grid -->
+      <section class="preview-grid" id="preview-grid" aria-label="轉換後頁面預覽">
+        <!-- Rendered Page Cards injected by JS -->
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        PDF to JPG Web Application · GitHub Pages Ready · Open Source
+        <span style="margin: 0 0.5rem;">·</span>
+        <a href="test.html">🧪 單元測試與資安報告</a>
+        <span style="margin: 0 0.5rem;">·</span>
+        <a href="plan.html">📋 SDD/TDD 實作計畫</a>
+        <span style="margin: 0 0.5rem;">·</span>
+        <a href="plan-review2.html">📋 第二輪複審計畫</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="js/converter.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

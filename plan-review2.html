@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e8e2d3">
+  <meta name="description" content="PDF 轉 JPG 工具第二輪 UI/UX 與資安複審之 SDD + TDD 實作計畫。">
+  <title>複審實作計畫 (第二輪) - PDF 轉 JPG 純網頁工具</title>
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a56ad' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E">
+
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';
+             style-src  'self' 'unsafe-inline' https://fonts.googleapis.com;
+             font-src   'self' https://fonts.gstatic.com;
+             img-src    'self' data:;">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+  <style>
+    /* ── 護眼色彩系統：沿用 css/style.css 的變數命名，避免第二輪審查
+       發現的「三頁各用一組不同色彩變數名」問題在本頁重演 ─────── */
+    :root {
+      --bg-primary:     #e8e2d3;
+      --bg-surface:     #f1ece0;
+      --border-color:   rgba(38, 34, 26, 0.12);
+      --text-primary:   #2b2620;
+      --text-secondary: #58503f;   /* 對比度 6.17:1，通過 WCAG AA */
+      --primary-color:  #0a56ad;
+      --accent-color:   #6c3fc0;
+      --success-color:  #146c2e;
+      --danger-color:   #a81d28;
+      --warning-color:  #8a5c00;
+      --radius:         10px;
+      --focus-ring:     0 0 0 3px rgba(10, 86, 173, 0.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.75;
+      padding: clamp(1rem, 4vw, 2rem) clamp(0.75rem, 3vw, 1.5rem);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    /* ── 導覽列 ──────────────────────────────────────────── */
+    .top-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      margin-bottom: 1.75rem;
+      font-size: clamp(0.8rem, 2.5vw, 0.875rem);
+    }
+    .top-nav a { color: var(--primary-color); text-decoration: none; font-weight: 600; opacity: 0.85; }
+    .top-nav a:hover { opacity: 1; text-decoration: underline; }
+    .top-nav a:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+      border-radius: 2px;
+      opacity: 1;
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
+    header {
+      text-align: center;
+      margin-bottom: clamp(1.5rem, 4vw, 3rem);
+      padding-bottom: clamp(1.25rem, 3vw, 2rem);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.3rem 0.875rem;
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      font-weight: 600;
+      border-radius: 9999px;
+      background: rgba(10, 86, 173, 0.10);
+      color: var(--primary-color);
+      border: 1px solid rgba(10, 86, 173, 0.25);
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: clamp(1.5rem, 5vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(135deg, #0a56ad 0%, #6c3fc0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      padding: 0.1em 0;
+    }
+    p.subtitle {
+      color: var(--text-secondary);
+      font-size: clamp(0.875rem, 2.5vw, 1.05rem);
+      max-width: 60ch;
+      margin: 0 auto;
+    }
+
+    /* ── Card ────────────────────────────────────────────── */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: clamp(1rem, 3vw, 1.5rem);
+      box-shadow: 0 4px 12px rgba(38, 34, 26, 0.08);
+      margin-bottom: clamp(1.25rem, 3vw, 2rem);
+    }
+    .card-title {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary-color);
+      flex-wrap: wrap;
+    }
+
+    /* ── TDD Red/Green/Refactor 步驟 ─────────────────────── */
+    .workflow-steps { display: flex; flex-direction: column; gap: 0.875rem; margin-bottom: clamp(1.25rem, 3vw, 2rem); }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.875rem;
+      background: rgba(38, 34, 26, 0.035);
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--accent-color);
+    }
+    .step-number {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--accent-color);
+      color: #ffffff;
+      font-weight: 700;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.85rem;
+    }
+    .step-content h4 { font-size: clamp(0.875rem, 2.5vw, 1rem); margin-bottom: 0.2rem; color: var(--text-primary); }
+    .step-content p { font-size: clamp(0.8rem, 2vw, 0.875rem); color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── Task Table ─────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 0.875rem; border-radius: var(--radius); }
+    table { width: 100%; min-width: 640px; border-collapse: collapse; text-align: left; font-size: clamp(0.8rem, 2.2vw, 0.9rem); }
+    th, td { padding: clamp(0.5rem, 2vw, 0.85rem) clamp(0.75rem, 2vw, 1rem); border-bottom: 1px solid var(--border-color); vertical-align: top; }
+    th { background: rgba(38, 34, 26, 0.04); color: var(--text-secondary); font-weight: 600; white-space: nowrap; }
+    tr:hover { background: rgba(38, 34, 26, 0.02); }
+    tr:last-child td { border-bottom: none; }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.12rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 600;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .tag-high { background: rgba(168, 29, 40, 0.10);  color: var(--danger-color);  border: 1px solid rgba(168, 29, 40, 0.3); }
+    .tag-mid  { background: rgba(138, 92, 0, 0.10);  color: var(--warning-color); border: 1px solid rgba(138, 92, 0, 0.3); }
+    .tag-low  { background: rgba(20, 108, 46, 0.10);  color: var(--success-color); border: 1px solid rgba(20, 108, 46, 0.3); }
+
+    /* ── 驗收條件 ───────────────────────────────────────── */
+    ul.check-list { list-style: none; }
+    ul.check-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.6rem;
+      font-size: clamp(0.875rem, 2.5vw, 0.95rem);
+      color: var(--text-primary);
+    }
+    ul.check-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--success-color);
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: clamp(2rem, 5vw, 3rem);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    /* ── 480px — 手機 ───────────────────────────────────── */
+    @media (max-width: 480px) {
+      .step-item { gap: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <nav class="top-nav" aria-label="頁面導覽">
+      <a href="index.html">← 回到 PDF 轉 JPG 工具</a>
+      <a href="plan.html">📋 第一輪實作計畫</a>
+      <a href="test.html">🧪 單元測試與資安報告</a>
+    </nav>
+
+    <header>
+      <div class="badge">Specification-Driven &amp; Test-Driven Development · Round 2</div>
+      <h1>UI/UX + 資安規範複審 實作計畫</h1>
+      <p class="subtitle">第二輪審查：重讀目前程式碼後找出的 7 項殘留問題（RWD／護眼配色／鍵盤可用性／CSP 一致性），依 TDD 流程逐條修正</p>
+    </header>
+
+    <div class="card">
+      <h2 class="card-title">🔴🟢🔵 本輪 TDD 開發流程</h2>
+      <div class="workflow-steps">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Red（紅燈）：先寫失敗案例</h4>
+            <p>在 js/tests.js 對可自動化的項目（如對比度計算、CSP meta 是否存在、integrity 屬性是否存在）新增測試斷言，確認目前為紅燈；無法自動化的項目（鍵盤操作、CSP 實際攔截行為）改用情境式人工驗收條件。</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Green（綠燈）：逐條最小修正</h4>
+            <p>依 tasks.md 任務順序，一次只改一項（例如先修鍵盤事件，測過再修對比度色值），避免一次改動多檔難以定位問題來源。</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Refactor（重構）：統一設計 token</h4>
+            <p>待個別修正通過後，統一三頁 CSS 變數命名並收斂重複的色彩定義，確保後續調色只需改一處。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">📋 任務清單（對應 sdd/ui-ux-security-review/tasks.md）</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>嚴重度</th>
+              <th>問題</th>
+              <th>修正動作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="tag tag-high">高</span></td>
+              <td>CSP <code>worker-src blob:</code> 可能未涵蓋 PDF.js worker 的 CDN 載入來源</td>
+              <td>瀏覽器 DevTools 實測是否被攔截，視結果調整 CSP 或 workerSrc 載入策略</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="tag tag-high">高</span></td>
+              <td>拖曳上傳區 <code>role="button"</code> 缺少 keydown 處理</td>
+              <td>js/app.js 新增 Enter/Space 觸發選檔的 keydown 監聽</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="tag tag-mid">中</span></td>
+              <td><code>--text-muted (#6e7681)</code> 對比度僅 4.125:1，未達 WCAG AA</td>
+              <td>三份樣式的 muted 文字色改為對比度 ≥4.5:1 的色值</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><span class="tag tag-mid">中</span></td>
+              <td>plan.html／test.html 完全沒有 CSP 保護</td>
+              <td>依各頁實際載入資源補上對應 CSP meta 標籤</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><span class="tag tag-mid">中</span></td>
+              <td>CDN 腳本只有 <code>crossorigin</code>，無 <code>integrity</code> SRI hash</td>
+              <td>四支 CDN 腳本加上正確的 <code>integrity="sha384-..."</code></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><span class="tag tag-low">低</span></td>
+              <td>三頁各用一組不同名稱的 CSS 色彩變數</td>
+              <td>統一為 css/style.css 現有命名（<code>--primary-color</code> 等）</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><span class="tag tag-low">低</span></td>
+              <td>三頁皆無 favicon／theme-color</td>
+              <td>補上 inline SVG favicon 與 <code>theme-color</code> meta（本頁已示範做法）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">✅ 驗收條件與情境</h2>
+      <ul class="check-list">
+        <li><strong>鍵盤可用性</strong>：純鍵盤（Tab + Enter/Space）能完成「聚焦上傳區 → 觸發選檔對話框」。</li>
+        <li><strong>CSP 不阻擋功能</strong>：三頁載入時 Console 無 CSP violation，且 PDF 上傳、預覽、ZIP 下載仍正常運作。</li>
+        <li><strong>對比度達標</strong>：調整後的 muted 文字色對背景對比度 ≥4.5:1（附計算結果）。</li>
+        <li><strong>CSP 一致性</strong>：三頁 <code>&lt;head&gt;</code> 皆有對應 CSP meta 標籤。</li>
+        <li><strong>SRI 落實</strong>：三頁 CDN <code>&lt;script&gt;</code> 皆有格式正確的 <code>integrity</code> 屬性。</li>
+        <li><strong>設計 token 統一</strong>：搜尋三份樣式，同語意色彩只用同一組變數名。</li>
+        <li><strong>行動裝置體驗</strong>：分頁圖示與網址列主題色正確顯示。</li>
+      </ul>
+    </div>
+
+    <footer>
+      <p>PDF to JPG Web App · UI/UX + Security Review Round 2 · Plan Only（尚未取得「實作」授權，程式碼未變更）</p>
+    </footer>
+  </div>
+</body>
+</html>

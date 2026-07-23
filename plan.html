@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDD & TDD 實作計畫 - PDF 轉 JPG 純網頁工具</title>
+  <meta name="theme-color" content="#e8e2d3">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a56ad' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E">
+
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';
+             style-src  'self' 'unsafe-inline' https://fonts.googleapis.com;
+             font-src   'self' https://fonts.gstatic.com;
+             img-src    'self' data:;">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+  <style>
+    /* ── 護眼色彩系統（與 index.html 一致） ──────────────── */
+    :root {
+      --bg-primary:    #e8e2d3;
+      --bg-surface:    #f1ece0;
+      --bg-input:      #ddd6c4;
+      --border-color:  rgba(38, 34, 26, 0.12);
+      --text-primary:  #2b2620;
+      --text-muted:    #635c48;
+      --primary-color: #0a56ad;
+      --accent-color:  #6c3fc0;
+      --success-color: #146c2e;
+      --danger-color:  #a81d28;
+      --radius-md:     10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.75;
+      padding: clamp(1rem, 4vw, 2rem) clamp(0.75rem, 3vw, 1.5rem);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    /* ── 導覽列（回首頁） ────────────────────────────────── */
+    .top-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      margin-bottom: 1.75rem;
+      font-size: clamp(0.8rem, 2.5vw, 0.875rem);
+    }
+
+    .top-nav a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      opacity: 0.85;
+    }
+
+    .top-nav a:hover { opacity: 1; text-decoration: underline; }
+    .top-nav a:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+      border-radius: 2px;
+      opacity: 1;
+    }
+
+    /* ── Page Header ─────────────────────────────────────── */
+    header {
+      text-align: center;
+      margin-bottom: clamp(1.5rem, 4vw, 3rem);
+      padding-bottom: clamp(1.25rem, 3vw, 2rem);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.3rem 0.875rem;
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      font-weight: 600;
+      border-radius: 9999px;
+      background: rgba(10, 86, 173, 0.10);
+      color: var(--primary-color);
+      border: 1px solid rgba(10, 86, 173, 0.25);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 5vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(135deg, #0a56ad 0%, #6c3fc0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      padding: 0.1em 0;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: clamp(0.875rem, 2.5vw, 1.05rem);
+      max-width: 55ch;
+      margin: 0 auto;
+    }
+
+    /* ── Card ────────────────────────────────────────────── */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(1rem, 3vw, 1.5rem);
+      box-shadow: 0 4px 12px rgba(38, 34, 26, 0.08);
+    }
+
+    .card-title {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary-color);
+      flex-wrap: wrap;
+    }
+
+    /* ── 雙欄格線（RWD 安全版）──────────────────────────── */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: clamp(1rem, 2.5vw, 1.5rem);
+      margin-bottom: clamp(1.25rem, 3vw, 2.5rem);
+    }
+
+    /* ── Tech List ───────────────────────────────────────── */
+    ul.check-list { list-style: none; }
+    ul.check-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.6rem;
+      font-size: clamp(0.875rem, 2.5vw, 0.95rem);
+    }
+    ul.check-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--success-color);
+      font-weight: 700;
+    }
+
+    /* ── TDD Workflow Steps ─────────────────────────────── */
+    .workflow-steps { display: flex; flex-direction: column; gap: 0.875rem; }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.875rem;
+      background: rgba(38, 34, 26, 0.035);
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--accent-color);
+    }
+
+    .step-number {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--accent-color);
+      color: #ffffff;
+      font-weight: 700;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.85rem;
+    }
+
+    .step-content h4 {
+      font-size: clamp(0.875rem, 2.5vw, 1rem);
+      margin-bottom: 0.2rem;
+      color: var(--text-primary);
+    }
+
+    .step-content p {
+      font-size: clamp(0.8rem, 2vw, 0.875rem);
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── Task Table ─────────────────────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;  /* iOS 慣性捲動 */
+      margin-top: 0.875rem;
+      border-radius: var(--radius-md);
+    }
+
+    table {
+      width: 100%;
+      min-width: 500px;   /* 強制橫向捲動觸發點 */
+      border-collapse: collapse;
+      text-align: left;
+      font-size: clamp(0.8rem, 2.2vw, 0.9rem);
+    }
+
+    th, td {
+      padding: clamp(0.5rem, 2vw, 0.85rem) clamp(0.75rem, 2vw, 1rem);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: rgba(38, 34, 26, 0.04);
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tr:hover { background: rgba(38, 34, 26, 0.02); }
+    tr:last-child td { border-bottom: none; }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.12rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tag-tdd {
+      background: rgba(168, 29, 40, 0.10);
+      color: var(--danger-color);
+      border: 1px solid rgba(168, 29, 40, 0.3);
+    }
+
+    .tag-sdd {
+      background: rgba(108, 63, 192, 0.10);
+      color: var(--accent-color);
+      border: 1px solid rgba(108, 63, 192, 0.3);
+    }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      margin-top: clamp(2rem, 5vw, 3rem);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── 480px — 手機 ────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .grid-2col { grid-template-columns: 1fr; }
+      .step-item { gap: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- 頂部導覽 -->
+    <nav class="top-nav" aria-label="頁面導覽">
+      <a href="index.html">← 回到 PDF 轉 JPG 工具</a>
+      <a href="test.html">🧪 單元測試與資安報告</a>
+      <a href="plan-review2.html">📋 第二輪複審計畫</a>
+    </nav>
+
+    <header>
+      <div class="badge">Specification-Driven &amp; Test-Driven Development</div>
+      <h1>PDF 轉 JPG 純網頁工具實作計畫</h1>
+      <p class="subtitle">100% 客戶端轉換 · 無伺服器依賴 · 可直接部署至 GitHub Pages</p>
+    </header>
+
+    <!-- 上方雙欄：架構與 TDD 流程 -->
+    <div class="grid-2col">
+      <div class="card">
+        <h2 class="card-title">🚀 架構與技術選型</h2>
+        <ul class="check-list">
+          <li><strong>PDF.js (Mozilla)</strong>：瀏覽器端 PDF 解析與 Canvas 繪製</li>
+          <li><strong>JSZip &amp; FileSaver</strong>：圖片打包 .zip 壓縮與自動下載</li>
+          <li><strong>Vanilla JS + CSS3</strong>：輕量無框架，高效響應式 UI</li>
+          <li><strong>IIFE 模組封裝</strong>：核心邏輯隔離，避免全域命名空間污染</li>
+          <li><strong>TDD Test Runner</strong>：自研輕量單元測試模組 (test.html)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">🔴🟢🔵 TDD 開發流程</h2>
+        <div class="workflow-steps">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Red（紅燈）：編寫測試</h4>
+              <p>在 js/tests.js 撰寫驗證邏輯與封裝測試，確認執行失敗。</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Green（綠燈）：最簡實作</h4>
+              <p>在 js/converter.js 編寫相應程式碼，使單元測試全數通過。</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Refactor（重構）</h4>
+              <p>優化效能與異步處理邏輯，確保測試維持綠燈狀態。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 任務表格 -->
+    <div class="card" style="margin-bottom: clamp(1rem, 3vw, 2rem);">
+      <h2 class="card-title">📋 階段性任務實作計畫</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>模式</th>
+              <th>任務目標</th>
+              <th>關鍵預期產出</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="tag tag-sdd">SDD</span></td>
+              <td>建置實作計畫與測試 Runner</td>
+              <td>plan.html 與 test.html 基礎框架</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="tag tag-tdd">TDD</span></td>
+              <td>檔案上傳限制單元測試與 validateFile 模組</td>
+              <td>阻擋多檔與非 PDF 格式之驗證邏輯通過綠燈</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="tag tag-tdd">TDD</span></td>
+              <td>ZIP 打包名稱與 Blob 封裝單元測試與 createZip 模組</td>
+              <td>多圖檔一鍵 Zip 壓縮包封裝邏輯通過綠燈</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><span class="tag tag-sdd">SDD</span></td>
+              <td>設計 index.html 介面與 style.css 拖曳預覽視覺風格</td>
+              <td>質感拖曳上傳卡片與響應式預覽網格佈局</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><span class="tag tag-sdd">SDD</span></td>
+              <td>整合 PDF.js 實現 renderPdfToJpgBlobs 轉換核心</td>
+              <td>PDF 逐頁繪製至 Canvas 並轉為 JPG Blob</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><span class="tag tag-sdd">SDD</span></td>
+              <td>完成 app.js UI 事件監聽與轉換/下載流程整合</td>
+              <td>即時進度條、圖檔預覽與打包下載全流程運作</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><span class="tag tag-tdd">TDD</span></td>
+              <td>自動化單元測試全過與人工 E2E 端到端驗收</td>
+              <td>test.html 100% 綠燈與完整實機測試</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 驗收條件 -->
+    <div class="card">
+      <h2 class="card-title">✅ 驗收條件與情境</h2>
+      <ul class="check-list">
+        <li><strong>限制單檔 PDF</strong>：當使用者上傳非 PDF 檔或一次上傳超過 1 個檔案時，顯示錯誤訊息並阻止進行轉換。</li>
+        <li><strong>即時轉換與預覽</strong>：成功讀取 PDF 後，顯示分頁繪製進度，並能預覽各頁轉出的 JPG 圖片。</li>
+        <li><strong>打包下載 ZIP</strong>：點擊「下載全部 (ZIP)」按鈕時，將所有頁面圖片打包並提示下載。</li>
+        <li><strong>GitHub Pages 相容</strong>：全靜態檔案，無跨域或後端依賴，部署即可直接公開使用。</li>
+        <li><strong>RWD 全裝置適配</strong>：手機（320px）至桌機（1200px+）均有對應版型，護眼配色降低視覺疲勞。</li>
+      </ul>
+    </div>
+
+    <footer>
+      <p>PDF to JPG Web App · SDD &amp; TDD Implementation Plan · 2026</p>
+    </footer>
+  </div>
+</body>
+</html>
