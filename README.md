@@ -783,6 +783,21 @@
 
 ---
 
+### [2026-07-24] 使用者要求上傳到 GitHub（本輪原始未補寫入 README，此為事後補記）
+
+#### 1. 使用者指令 (USER)
+- 「上傳「https://github.com/lushinshang/PDF_TO_JPG/tree/main」」
+
+#### 2. AI 執行總結 (AI)
+- 檢查本機目前不是 git repo。`gh auth status` 確認已登入對應帳號，`git ls-remote` 確認遠端 repo 已存在（`main` 分支已有 1 個 commit）。
+- 詢問使用者處理方式（初始化+合併遠端後推送，或直接覆蓋），使用者選擇前者。
+- 新增 `.gitignore`（排除 `.claude/`、`.DS_Store`），`git init`、`git remote add origin`、`git branch -M main`，將專案檔案（`index.html`、`css/`、`js/`、`plan.html`、`test.html`、`plan-review2.html`、`README.md`、`sdd/`）加入並建立初始 commit。
+- `git fetch origin` 後發現遠端 `main` 已有一個獨立提交 `Create static.yml`（GitHub 內建的「Deploy static content to Pages」workflow），與本機提交沒有共同祖先。用 `git merge origin/main --allow-unrelated-histories` 合併，無衝突，保留該 workflow 檔案。
+- `git push -u origin main` 成功，`git status` 確認乾淨。
+- **補記說明**：這一輪對話當下未依 Append-only 規範同步寫入 README.md，是後續驗收另一篇文件（開發旅程導讀）時才發現這個缺漏，回頭補上，確保紀錄與實際發生的事一致。
+
+---
+
 ### [2026-07-24] 背景資安審查（推送後自動觸發）發現 3 項問題
 
 #### 1. 觸發來源 (SYSTEM)
