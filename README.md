@@ -798,3 +798,42 @@
 - **尚未推送**：這些修正目前只在本機，因為觸發本輪修正的是系統背景通知而非使用者當下指示，故先完成修正與驗證後停下回報，push 與否待使用者確認。
 
 ---
+
+### [2026-07-24] 使用者要求執行 Claude Security 全專案掃描
+
+#### 1. 使用者指令 (USER)
+- 執行 `/claude-security:claude-security`（本機 slash command），選擇「Scan codebase」
+
+#### 2. AI 執行總結 (AI)
+- 全專案 15 個追蹤檔案，`medium` 強度，無範圍限縮，revision `d52d392`。
+- 6 個元件（轉檔核心、UI、樣式、測試/計畫頁、CI 部署、專案文件）各派研究員找漏洞，共提出 9 個候選（去重後 7 個），逐一交由 3 位獨立審查員投票。
+- 結果：**0 個發現**，7 個候選在每一輪都是 0/3 票——查證後皆不成立。`verification.status: verified`。
+- 報告存於本機 `CLAUDE-SECURITY-20260724-004823/`，該目錄依工具預設帶自己的 `.gitignore`（內容 `*`），不會進版控。
+
+---
+
+### [2026-07-24] 使用者確認推送先前的 CSP/供應鏈修正
+
+#### 1. 使用者指令 (USER)
+- 「把先前那 3 項 CSP/供應鏈修正 push 上去」
+
+#### 2. AI 執行總結 (AI)
+- Commit `435ec5d`：移除 `index.html` CSP 裡不必要的 `'unsafe-inline'`；`js/converter.js` 加上 SHA-512 完整性驗證後才使用 PDF.js worker blob URL；README.md 同步紀錄。
+- `git push origin main` 成功，`git status` 確認乾淨。
+
+---
+
+### [2026-07-24] 使用者詢問 Claude Security 掃描算不算資安測試，並要求記錄進 test.html
+
+#### 1. 使用者指令 (USER)
+- 「這個算不算資安測試？算的話要不要加進去紀錄html?」
+- 「好，要和index.html互相連動」
+
+#### 2. AI 執行總結 (AI)
+- 判斷：算，且是比 `test.html` 既有「資安風險審核合格」卡片（人工論述型）更「硬」的一種——有工具實跑、有版本戳記、有三人獨立驗證輪次。
+- 在 `test.html` 新增獨立卡片 `#auto-scan`（藍色邊框，與既有綠色論述卡片視覺區隔），列出 commit、日期、強度、狀態、掃描範圍、候選數與票數結果，並註明這是特定 commit 的一次性快照、原始報告不隨部署發布。
+- 在 `index.html` header 新增可點擊徽章「🔍 自動化資安掃描：0 個發現」連到 `test.html#auto-scan`，與 `css/style.css` 新增 `.badge-row`／`.scan-badge` 樣式；`test.html` 頂部導覽原本就有連回 `index.html` 的連結，形成雙向連動。
+- 以 Playwright 實測點擊徽章成功跳轉到錨點、截圖確認排版無壞版、Console 0 error、`test.html` 測試套件仍 9/9 PASS。
+- 尚未推送，待使用者確認。
+
+---

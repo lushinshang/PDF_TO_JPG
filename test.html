@@ -158,6 +158,60 @@
 
     .security-list strong { color: var(--text-primary); }
 
+    /* ── Automated Scan Card（工具跑過的掃描，與上方人工論述卡片區隔）─ */
+    .scan-card {
+      background: rgba(10, 86, 173, 0.05);
+      border: 1px solid rgba(10, 86, 173, 0.3);
+      border-radius: var(--radius-md);
+      padding: clamp(1rem, 3vw, 1.25rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .scan-title {
+      color: var(--primary-color);
+      font-size: clamp(0.95rem, 3vw, 1.1rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .scan-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(0.72rem, 2.2vw, 0.8rem);
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1rem;
+    }
+
+    .scan-list { list-style: none; }
+    .scan-list li {
+      position: relative;
+      padding-left: 1.2rem;
+      margin-bottom: 0.4rem;
+      font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .scan-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+    .scan-footnote {
+      margin-top: 0.75rem;
+      font-size: clamp(0.75rem, 2.2vw, 0.82rem);
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
     /* ── Test Suite ─────────────────────────────────────── */
     .test-suite {
       background: var(--bg-surface);
@@ -273,6 +327,28 @@
           `Content-Security-Policy` 隔離未授權資產請求。
         </li>
       </ul>
+    </div>
+
+    <!-- 自動化資安掃描卡片（工具實跑，區別於上方人工論述式審核） -->
+    <div class="scan-card" id="auto-scan" role="region" aria-label="自動化資安掃描報告">
+      <h2 class="scan-title">
+        🔍 自動化資安掃描（Claude Security）
+      </h2>
+      <div class="scan-meta">
+        <span>Commit: d52d392</span>
+        <span>日期：2026-07-24</span>
+        <span>強度：medium</span>
+        <span>狀態：verified</span>
+      </div>
+      <ul class="scan-list">
+        <li>掃描範圍：全專案 6 個元件（轉檔核心、UI、樣式、測試/計畫頁、CI 部署、專案文件）</li>
+        <li>提出 9 個候選疑點（去重後 7 個），逐一交由 3 位獨立審查員交叉驗證</li>
+        <li>全部 7 個候選在每一輪都是 0/3 票通過——查證後皆不成立，最終報告無發現</li>
+      </ul>
+      <p class="scan-footnote">
+        此為特定 commit 的一次性快照，並非持續性保證；程式碼異動後需重新掃描。原始報告存於本機
+        <code>CLAUDE-SECURITY-20260724-004823/</code>（依工具預設不進版控，未隨部署發布）。
+      </p>
     </div>
 
     <!-- 測試結果（由 JS 動態注入） -->

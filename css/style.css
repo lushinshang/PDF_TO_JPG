@@ -98,6 +98,35 @@ header {
   backdrop-filter: blur(8px);
 }
 
+.badge-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.badge-row .logo-badge { margin-bottom: 0; }
+
+.scan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 1rem;
+  background: rgba(20, 108, 46, 0.08);
+  border: 1px solid rgba(20, 108, 46, 0.3);
+  border-radius: 9999px;
+  color: var(--success-color);
+  font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+.scan-badge:hover { background: rgba(20, 108, 46, 0.15); }
+.scan-badge:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
 h1 {
   font-size: clamp(1.75rem, 6vw, 2.5rem);
   font-weight: 800;
