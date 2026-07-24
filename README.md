@@ -782,3 +782,19 @@
 - 以 Playwright 實際點擊 `index.html` 上的新連結導向 `plan-review2.html` 成功，並重新載入四頁確認 Console 皆 0 error、`test.html` 仍 9/9 PASS。
 
 ---
+
+### [2026-07-24] 背景資安審查（推送後自動觸發）發現 3 項問題
+
+#### 1. 觸發來源 (SYSTEM)
+- 推送到 GitHub 後，背景 commit 安全審查回報：`csp-misconfiguration`（index.html）、`supply-chain-integrity`（js/converter.js）、`csp-weakening`（index.html）。
+
+#### 2. AI 檢查與修正總結 (AI)
+- **CSP 過寬（csp-weakening / csp-misconfiguration）**：`index.html` 的 CSP `script-src` 帶了 `'unsafe-inline'`，但實際檢查全頁 `<script>` 標籤，5 支全部是外部 `src=`，沒有任何 inline script 內容——`'unsafe-inline'` 完全是不必要的殘留設定，等於自己拆掉 CSP 對 XSS 的核心防禦。已移除。
+- **供應鏈完整性缺口（supply-chain-integrity）**：`js/converter.js` 的 `pdf.worker.min.js` 透過 `pdfjsLib.GlobalWorkerOptions.workerSrc` 指向 CDN URL 字串直接載入，先前雖已知此問題（`<script integrity>` 無法保護動態 Worker），但只記錄為「已知限制」未真正處理。這次改為手動 `fetch()` 下載該檔 → 用 `crypto.subtle.digest('SHA-512')` 計算雜湊 → 與 cdnjs 官方 hash 比對 → 通過才轉成 blob URL 給 `workerSrc` 使用；雜湊不符則直接拋錯拒絕載入（fail closed）。因此新增 CSP `connect-src 'self' https://cdnjs.cloudflare.com` 讓瀏覽器允許此 fetch。
+- **驗證**：
+  1. 修正後執行完整轉檔＋ZIP 流程，Console 0 error，Network 確認 `pdf.worker.min.js` 以 200 fetch 成功。
+  2. 刻意把雜湊改成全 0 測試 fail-closed 行為，確認會拋出「PDF.js worker 完整性校驗失敗，疑似遭竄改，已拒絕載入」並中止轉檔；改回正確雜湊後（用乾淨無快取的瀏覽器連線重測，排除本機 http.server 無 Cache-Control 造成的舊版 JS 快取干擾）確認轉檔恢復正常。
+  3. `test.html` 單元測試套件仍 9/9 PASS。
+- **尚未推送**：這些修正目前只在本機，因為觸發本輪修正的是系統背景通知而非使用者當下指示，故先完成修正與驗證後停下回報，push 與否待使用者確認。
+
+---
