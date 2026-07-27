@@ -81,11 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // FileList 為 live reference：resetState() 會清空 fileInput.value，
+    // 連帶使 FileList 同步歸零。必須在 reset 前先複製為靜態陣列。
+    const filesCopy = Array.from(files);
+
     hideError();
     resetState();
 
     try {
-      currentFile = window.validateFile(files);
+      currentFile = window.validateFile(filesCopy);
       await startConversion(currentFile);
     } catch (err) {
       showError(err.message);
