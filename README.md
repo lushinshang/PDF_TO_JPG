@@ -945,4 +945,32 @@
 - **測試結果**：`test.html` 單元與資安測試套件 9/9 PASS (100%)。
 - **git 同步**：完成 README.md 紀錄更新，commit 並推送至遠端 GitHub 倉庫。
 
+---
+
+### [2026-07-27] 文件更新：離線單檔 Package 與高品質 OCR 設定說明補充
+
+#### 1. 使用者指令 (USER)
+- 「補充readme.md
+  1.新增可下載離線式html
+  2.如果需要高品質OCR，建議調整的設定值」
+
+#### 2. AI 執行總結 (AI)
+
+##### 📦 1. 單檔案獨立離線包 (`pdf-to-jpg-offline.html`)
+- **下載位置**：可於 `index.html` 操作區與頁腳點擊「📦 下載單檔案離線 Package (.html)」直接下載。
+- **儲存路徑**：專案下 [dist/pdf-to-jpg-offline.html](file:///Users/lanss/projects/2_Practice/tools/1150724_pdf_to_jpg/dist/pdf-to-jpg-offline.html)（檔案大小約 1.47MB）。
+- **特點說明**：
+  - 100% 無網環境可用：已內嵌 PDF.js (v3.11.174)、JSZip、FileSaver 與完全自建之 CSS 樣式。
+  - Data URI 避錯機制：Worker 採用 `data:text/javascript` 載入，徹底解決本地雙擊 `file://` 開啟時 Origin `null` 導致的 `blob:null` 跨域阻擋錯。
+
+##### 🔍 2. 高品質 OCR 建議調整設定值指引
+若後續需要將轉換後的 JPG 圖片用於 **OCR（光學字元辨識 / 中英文與表格辨識）**，建議於 `js/converter.js` 中進行以下參數調優：
+
+| 調整參數 | 原預設值 | OCR 建議設定值 | 說明與優化原因 |
+| :--- | :---: | :---: | :--- |
+| **渲染倍率 (`scale`)** | `1.5` (~108 DPI) | **`2.0` ～ `3.0`** (300 DPI 最佳) | OCR 引擎的最佳辨識解析度為 200~300 DPI。提升至 `3.0` 可使 A4 解析度達到 `2550 x 3600` 像素，防止繁體中文複雜筆畫模糊黏連。 |
+| **JPEG 壓縮品質 (`quality`)** | `0.92` (92%) | **`0.95` ～ `0.98`** (近無損) | 減少高對比文字邊緣的「JPEG 方塊失真 (Block Artifacts)」，確保文字筆畫邊緣銳利。 |
+| **圖片格式 (Format)** | `'image/jpeg'` | `'image/jpeg'` 或 `'image/png'` | 要求極致 100% 無失真時，可切換至 PNG 格式。 |
+
+
 
