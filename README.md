@@ -908,3 +908,21 @@
 - **修復 file:// 協定下的 blob:null Worker 錯誤**：針對瀏覽器在 `file://` 下將網頁 Origin 判定為 `null` 導致拒絕載入 `blob:null/<uuid>` Worker 的問題，將內嵌 Worker 載入機制全數升級為 `Data URI` 格式 (`data:text/javascript;charset=utf-8,...`)，解決本地雙擊開啟時的 PDF 解析失敗問題。
 - **主頁下載與 CSP 升級**：在 `index.html` 操作區與頁腳新增「📥 下載單檔案離線 Package (.html)」按鈕；更新 `index.html` 的 CSP 標頭加入 `worker-src blob: data:;`，同步於 `js/converter.js` 中啟用 Data URI 備援。
 - **全方位健康檢查**：對離線單檔完成 DOM 完整度 (10/10)、網路零依賴 (0 外連 CDN) 與核心邏輯 (6/6) 之自動化校驗，確保品質合格。
+
+---
+
+### [2026-07-27] 修復點擊選檔冒泡迴圈、FileList Live Reference 陷阱與 CSP Fake Worker
+
+#### 1. 使用者指令 (USER)
+点擊選擇檔案會找不到檔案／點擊選檔出現「請選擇一個 PDF 檔案」／點擊無反應／出現「PDF 解析失敗：Setting up fake worker failed...」。
+
+#### 2. AI 執行總結 (AI)
+- **DOM 事件冒泡與原生觸發修復**：
+  - 將 `#drop-zone` 從 `<div>` 重構為 HTML 原生 `<label class="upload-card">` 包裹隱藏的 `<input type="file" id="file-input">`。藉由 HTML 規格原生關聯機制，觸發瀏覽器檔名選擇器，徹底避開在 `file://` 下由 JavaScript programmatic `click()` 遭瀏覽器判定非安全手勢而被靜默阻擋的問題。
+- **修復 FileList Live Reference 陷阱**：
+  - 修復選檔後跳出「請選擇一個 PDF 檔案」之 Bug。原因為 `files` 物件屬 `FileList` live reference，`resetState()` 在清空 `fileInput.value = ''` 時會連帶將 `files` 陣列同步清空為 0 個檔案。修改為在 `resetState()` 執行前先以 `Array.from(files)` 複製為獨立靜態陣列。
+- **修復 CSP script-src 與 PDF.js Fake Worker**：
+  - 解決雙擊 `index.html` 轉檔時出現 `Setting up fake worker failed: "Cannot load script at: data:text/javascript..."` 錯誤。原因為瀏覽器於 `file://` 協定無法建立 Web Worker 時會降級為 Fake Worker（以動態腳本執行），此行為受 `script-src` CSP 管控。已在 `index.html` CSP 標頭 `script-src` 加入 `data:` 放行。
+- **離線 Package 同步更新**：
+  - 執行 `python3 scripts/build_offline.py` 重新編譯生成最新版 `dist/pdf-to-jpg-offline.html`，並 commit 推送至遠端 GitHub 倉庫 (`main`)。
+
