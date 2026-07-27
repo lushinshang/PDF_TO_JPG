@@ -31,7 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
   errorClose.addEventListener('click', hideError);
 
   // ── 拖曳上傳事件（dragCounter 防閃爍）────────────────────
-  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('click', (e) => {
+    // 只有當點擊目標不是 fileInput 本身時，才手動觸發 click，防止 DOM 事件冒泡二次觸發
+    if (e.target !== fileInput) {
+      fileInput.click();
+    }
+  });
 
   // role="button" 的自訂元素不會內建鍵盤觸發行為，需自行處理 Enter/Space
   dropZone.addEventListener('keydown', (e) => {
@@ -72,12 +77,22 @@ document.addEventListener('DOMContentLoaded', () => {
     handleFilesSelected(files);
   });
 
+  fileInput.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.target.value = '';
+  });
+
   fileInput.addEventListener('change', (e) => {
     handleFilesSelected(e.target.files);
   });
 
   // ── 選擇檔案後處理 ────────────────────────────────────────
   async function handleFilesSelected(files) {
+    // 若使用者取消檔案選取（files 為空或長度為 0），安靜退出，不跳出錯誤警示 Banner
+    if (!files || files.length === 0) {
+      return;
+    }
+
     hideError();
     resetState();
 
