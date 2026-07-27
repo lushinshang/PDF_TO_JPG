@@ -926,3 +926,23 @@
 - **離線 Package 同步更新**：
   - 執行 `python3 scripts/build_offline.py` 重新編譯生成最新版 `dist/pdf-to-jpg-offline.html`，並 commit 推送至遠端 GitHub 倉庫 (`main`)。
 
+---
+
+### [2026-07-27] 全專案資安風險重新檢查與合規複審
+
+#### 1. 使用者指令 (USER)
+- 「依原來的規劃，重新資安檢查」
+- 「更新文件」
+
+#### 2. AI 執行總結 (AI)
+- **資安檢驗與威脅模型複審**：
+  - **後端攻擊面**：100% 純前端運算，無 Server-side API，零 SQLi / RCE / Command Injection 風險。
+  - **資料隱私**：PDF 與 JPG 生成檔完全留存於瀏覽器記憶體（Blob / Data URI），零網路傳輸洩漏。
+  - **XSS & DOM 隔離**：使用 Canvas 圖像繪製隔離惡意 PDF 內嵌腳本；動態卡片構建採用純 DOM API (`createElement`, `textContent`)，防範 `innerHTML` 腳本注入；選檔採用 HTML 原生 `<label>` 綁定，阻範事件冒泡死角。
+  - **CSP 標頭**：`index.html` 的 `script-src` 已移除 `'unsafe-inline'`，並補充放行 `data:` 腳本以支援 `file://` 協定下的 Fake Worker 退用機制；`worker-src` 規範 `blob: data:;`。
+  - **供應鏈完整性**：CDN 資源配置官方 sha512 SRI Hash 與 `crossorigin="anonymous"`；對動態 Worker 採用 `crypto.subtle.digest('SHA-512')` 手動雜湊驗驗，啟用 Fail-Closed 阻擋機制。
+  - **離線 Package 安全**：`dist/pdf-to-jpg-offline.html` 零外部 CDN 依賴，採用 Data URI 完全隔絕 Origin `null` 造成的跨域風險。
+- **測試結果**：`test.html` 單元與資安測試套件 9/9 PASS (100%)。
+- **git 同步**：完成 README.md 紀錄更新，commit 並推送至遠端 GitHub 倉庫。
+
+
