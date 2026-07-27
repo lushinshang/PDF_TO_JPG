@@ -34,4 +34,4 @@
 
 ## 補充：工作目錄說明（與制度檔案的落差）
 
-`ops/WORKFLOW.md` 預設工作目錄為 `/Users/lanss/projects/sdd/<短名稱>/`，但本專案在第一輪開發時已自行建立並使用專案內 `sdd/pdf-to-jpg-web/`（歸檔於專案內 `sdd/archive/2026-07-23-pdf-to-jpg-web/`，見 README.md）。為與既有專案內慣例一致，本次提案沿用專案內路徑 `sdd/ui-ux-security-review/`，特此回報此不一致，若您希望改回全域路徑請告知。
+`ops/WORKFLOW.md` 預設工作目錄為 `./sdd/<短名稱>/`，但本專案在第一輪開發時已自行建立並使用專案內 `sdd/pdf-to-jpg-web/`（歸檔於專案內 `sdd/archive/2026-07-23-pdf-to-jpg-web/`，見 README.md）。為與既有專案內慣例一致，本次提案沿用專案內路徑 `sdd/ui-ux-security-review/`，特此回報此不一致，若您希望改回全域路徑請告知。

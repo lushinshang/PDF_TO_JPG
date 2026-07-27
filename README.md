@@ -958,7 +958,7 @@
 
 ##### 📦 1. 單檔案獨立離線包 (`pdf-to-jpg-offline.html`)
 - **下載位置**：可於 `index.html` 操作區與頁腳點擊「📦 下載單檔案離線 Package (.html)」直接下載。
-- **儲存路徑**：專案下 [dist/pdf-to-jpg-offline.html](file:///Users/lanss/projects/2_Practice/tools/1150724_pdf_to_jpg/dist/pdf-to-jpg-offline.html)（檔案大小約 1.47MB）。
+- **儲存路徑**：專案下 [dist/pdf-to-jpg-offline.html](./dist/pdf-to-jpg-offline.html)（檔案大小約 1.47MB）。
 - **特點說明**：
   - 100% 無網環境可用：已內嵌 PDF.js (v3.11.174)、JSZip、FileSaver 與完全自建之 CSS 樣式。
   - Data URI 避錯機制：Worker 採用 `data:text/javascript` 載入，徹底解決本地雙擊 `file://` 開啟時 Origin `null` 導致的 `blob:null` 跨域阻擋錯。
