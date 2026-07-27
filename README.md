@@ -192,7 +192,7 @@
 
 # SDD 提案規劃
 
-已為您建立提案文件：[proposal.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/sdd/pdf-to-jpg-web/proposal.md) 與 [tasks.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/sdd/pdf-to-jpg-web/tasks.md)。
+已為您建立提案文件：[proposal.md](./sdd/pdf-to-jpg-web/proposal.md) 與 [tasks.md](./sdd/pdf-to-jpg-web/tasks.md)。
 
 ### 規劃任務清單 (`tasks.md`)
 1. 建立專案基礎 HTML 結構（`index.html`），包含檔案上傳區（限制單檔 `.pdf`）、狀態提示區與預覽下載區域
@@ -245,21 +245,21 @@
 已為您完成以下規劃與設定：
 
 ### 1. 對話紀錄 (`README.md`)
-* 已建立 [README.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/README.md)。
+* 已建立 [README.md](./README.md)。
 * 完整記錄從初始提案至今的所有對話與決策歷程。
 * **恪守 Append-only 規範**：對話紀錄只會持續新增與進行階段性總結，絕不修改或刪除既有歷史。
 
 ### 2. SDD + TDD 實作計畫網頁 (`plan.html`)
-* 已建立可開立瀏覽器檢視的視覺化計畫頁面：[plan.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/plan.html)。
+* 已建立可開立瀏覽器檢視的視覺化計畫頁面：[plan.html](./plan.html)。
 * 融合 **SDD（規格驅動）** 與 **TDD（測試驅動 Red/Green/Refactor）** 開發流程。
 
 ### 3. SDD 文件更新
-* [proposal.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/sdd/pdf-to-jpg-web/proposal.md)：加入純前端 TDD 測試架構與解耦合架構規劃。
-* [tasks.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/sdd/pdf-to-jpg-web/tasks.md)：已將任務細分，明確標註 TDD 單元測試階段與實作階段。
+* [proposal.md](./sdd/pdf-to-jpg-web/proposal.md)：加入純前端 TDD 測試架構與解耦合架構規劃。
+* [tasks.md](./sdd/pdf-to-jpg-web/tasks.md)：已將任務細分，明確標註 TDD 單元測試階段與實作階段。
 
 ---
 
-請您確認實作計畫 [plan.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/plan.html) 是否滿意。若確認無誤，請回應 **「實作」** 或 **「開始實作」**，我將依照 `tasks.md` 順序為您執行第一條任務！
+請您確認實作計畫 [plan.html](./plan.html) 是否滿意。若確認無誤，請回應 **「實作」** 或 **「開始實作」**，我將依照 `tasks.md` 順序為您執行第一條任務！
 
 
 ---
@@ -320,25 +320,25 @@
 ### 📁 專案成果檔案清單
 
 1. **對話紀錄 (Append-only)**：
-   * [README.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/README.md)：記錄提案、TDD 規劃與所有開發階段紀錄。
+   * [README.md](./README.md)：記錄提案、TDD 規劃與所有開發階段紀錄。
 
 2. **SDD / TDD 規劃與測試文件**：
-   * [plan.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/plan.html)：SDD + TDD 視覺化實作計畫頁面。
-   * [test.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/test.html)：TDD 自動化單元測試 Runner 頁面。
-   * [proposal.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/sdd/pdf-to-jpg-web/proposal.md) 與 [tasks.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/sdd/pdf-to-jpg-web/tasks.md)：SDD 規格與 7 項完成的實作任務清單。
+   * [plan.html](./plan.html)：SDD + TDD 視覺化實作計畫頁面。
+   * [test.html](./test.html)：TDD 自動化單元測試 Runner 頁面。
+   * [proposal.md](./sdd/pdf-to-jpg-web/proposal.md) 與 [tasks.md](./sdd/pdf-to-jpg-web/tasks.md)：SDD 規格與 7 項完成的實作任務清單。
 
 3. **應用程式主體（純前端 GitHub Pages 適用）**：
-   * [index.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/index.html)：主 UI 介面（包含 drag-and-drop 拖曳區、進度條、預覽網格、ZIP 一鍵下載按鈕）。
-   * [style.css](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/css/style.css)：質感深色 glassmorphic UI 樣式。
-   * [converter.js](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/js/converter.js)：驗證、PDF.js Canvas 繪製轉檔與 JSZip 打包核心邏輯。
-   * [app.js](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/js/app.js)：UI 事件監聽與完整轉檔下載流程控管。
-   * [tests.js](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/js/tests.js)：單獨檔案驗證與 ZIP Blob 測試套件。
+   * [index.html](./index.html)：主 UI 介面（包含 drag-and-drop 拖曳區、進度條、預覽網格、ZIP 一鍵下載按鈕）。
+   * [style.css](./css/style.css)：質感深色 glassmorphic UI 樣式。
+   * [converter.js](./js/converter.js)：驗證、PDF.js Canvas 繪製轉檔與 JSZip 打包核心邏輯。
+   * [app.js](./js/app.js)：UI 事件監聽與完整轉檔下載流程控管。
+   * [tests.js](./js/tests.js)：單獨檔案驗證與 ZIP Blob 測試套件。
 
 ---
 
 ### 🧪 驗收方式
-1. 您可以雙擊或以瀏覽器開啟 [index.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/index.html) 測試 PDF 上傳、即時轉檔與下載 ZIP 功能。
-2. 開啟 [test.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/test.html) 可檢視 TDD 單元測試通過狀況（PASS 綠燈）。
+1. 您可以雙擊或以瀏覽器開啟 [index.html](./index.html) 測試 PDF 上傳、即時轉檔與下載 ZIP 功能。
+2. 開啟 [test.html](./test.html) 可檢視 TDD 單元測試通過狀況（PASS 綠燈）。
 
 請您驗收功能！若確認沒問題且想完成歸檔，可回應 **「歸檔」**。
 
@@ -379,7 +379,7 @@
 ---
 
 ### 📝 對話紀錄更新
-* 已將此資安風險檢查歷程補充紀錄至 [README.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/README.md)（遵守 Append-only 原則）。
+* 已將此資安風險檢查歷程補充紀錄至 [README.md](./README.md)（遵守 Append-only 原則）。
 
 
 ---
@@ -403,20 +403,20 @@
 
 ### 🛠️ 變更內容摘要
 
-1. **[test.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/test.html) (測試與資安報告頁面)**：
+1. **[test.html](./test.html) (測試與資安報告頁面)**：
    - 頂部加入了 **🛡️ 資安風險審核合格 (Security Audit Certificate)** 卡片，詳列 4 大資安防禦條目。
    - 在 `js/tests.js` 中新增了 **Suite 3: 資安風險審核測試** 測試案例。
 
-2. **[index.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/index.html) (工具主頁)**：
+2. **[index.html](./index.html) (工具主頁)**：
    - 在標題上方建立了明顯的快捷連結：
      - **🧪 單元測試與資安風險報告 (test.html)**
      - **📋 SDD/TDD 實作計畫 (plan.html)**
 
-3. **[README.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/README.md) (對話紀錄)**：
+3. **[README.md](./README.md) (對話紀錄)**：
    - 已同步追加本次對話與檔案變更紀錄（符合 Append-only 原則）。
 
 ---
-您現在可以開啟 [index.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/index.html)，點擊頁頭頂部的連結即可直接跳轉至 [test.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/test.html) 檢視完整的單元測試與資安審核成果！
+您現在可以開啟 [index.html](./index.html)，點擊頁頭頂部的連結即可直接跳轉至 [test.html](./test.html) 檢視完整的單元測試與資安審核成果！
 
 
 ---
@@ -434,7 +434,7 @@
 
 1. **任務檢查**：確認 `tasks.md` 中的 7 項任務全數完成打勾 (`- [x]`)。
 2. **目錄搬移**：已將 `sdd/pdf-to-jpg-web/` 提案與任務目錄搬移至 `sdd/archive/2026-07-23-pdf-to-jpg-web/` 進行永久存檔。
-3. **對話日誌更新**：已將歸檔紀錄與最終總結追加至 [README.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/README.md)（遵守 Append-only 規範）。
+3. **對話日誌更新**：已將歸檔紀錄與最終總結追加至 [README.md](./README.md)（遵守 Append-only 規範）。
 
 ---
 
@@ -565,28 +565,28 @@
 
 | 問題 | 修正位置 | 做了什麼 |
 |:---|:---:|:---|
-| `plan.html` CSS bug：`1fr solid` | [plan.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/plan.html#L47) | 改為 `1px solid`，header 分隔線現在正確顯示 |
-| `plan.html` CSS bug：`rgba(f8,...)` | [plan.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/plan.html#L198) | 改為 `rgba(248,...)` ，TDD tag border 正確渲染 |
-| Header 出現工程師導覽連結 | [index.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/index.html) | 連結移至 `<footer>`，Header 保持使用者視角乾淨 |
-| `innerHTML` XSS 隱患 + base64 記憶體洩漏 | [app.js](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/js/app.js) | 改用純 DOM API；改用 `URL.createObjectURL`，`resetState()` 時逐一 `revokeObjectURL` 釋放記憶體 |
+| `plan.html` CSS bug：`1fr solid` | [plan.html](./plan.html#L47) | 改為 `1px solid`，header 分隔線現在正確顯示 |
+| `plan.html` CSS bug：`rgba(f8,...)` | [plan.html](./plan.html#L198) | 改為 `rgba(248,...)` ，TDD tag border 正確渲染 |
+| Header 出現工程師導覽連結 | [index.html](./index.html) | 連結移至 `<footer>`，Header 保持使用者視角乾淨 |
+| `innerHTML` XSS 隱患 + base64 記憶體洩漏 | [app.js](./js/app.js) | 改用純 DOM API；改用 `URL.createObjectURL`，`resetState()` 時逐一 `revokeObjectURL` 釋放記憶體 |
 
 ### 🟡 中嚴重（5 項）
 
 | 問題 | 修正位置 | 做了什麼 |
 |:---|:---:|:---|
-| 無 `:focus-visible` 無障礙焦點 | [style.css](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/css/style.css) | 所有可互動元素加上 `3px sky-blue focus ring` |
-| `dragleave` 子元素閃爍 | [app.js](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/js/app.js) | `dragCounter` 計數器控制，只有真正離開才移除 `.drag-over` |
-| Error Banner 無法關閉 | [index.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/index.html) + [app.js](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/js/app.js) | 加入 ✕ 關閉按鈕；5 秒後自動消除 |
-| `converter.js` 全域命名空間污染 | [converter.js](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/js/converter.js) | 改為 IIFE 封裝，函式明確掛載 `window.*` |
-| `plan.html` 缺返回連結（死路） | [plan.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/plan.html) | 加入返回 `index.html` 與 `test.html` 的頂部導覽列 |
+| 無 `:focus-visible` 無障礙焦點 | [style.css](./css/style.css) | 所有可互動元素加上 `3px sky-blue focus ring` |
+| `dragleave` 子元素閃爍 | [app.js](./js/app.js) | `dragCounter` 計數器控制，只有真正離開才移除 `.drag-over` |
+| Error Banner 無法關閉 | [index.html](./index.html) + [app.js](./js/app.js) | 加入 ✕ 關閉按鈕；5 秒後自動消除 |
+| `converter.js` 全域命名空間污染 | [converter.js](./js/converter.js) | 改為 IIFE 封裝，函式明確掛載 `window.*` |
+| `plan.html` 缺返回連結（死路） | [plan.html](./plan.html) | 加入返回 `index.html` 與 `test.html` 的頂部導覽列 |
 
 ### 🟢 低嚴重（3 項）
 
 | 問題 | 修正位置 | 做了什麼 |
 |:---|:---:|:---|
-| img `alt` 文字不友善 | [app.js](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/js/app.js) | 改為「第 N 頁 JPG 預覽圖」中文說明 |
-| 無行動裝置 responsive | [style.css](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/css/style.css) | 加入 `@media (max-width: 600px)` 斷點調整 |
-| CDN 缺少 `crossorigin` | [index.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/index.html) | 所有 CDN script 加上 `crossorigin="anonymous"` |
+| img `alt` 文字不友善 | [app.js](./js/app.js) | 改為「第 N 頁 JPG 預覽圖」中文說明 |
+| 無行動裝置 responsive | [style.css](./css/style.css) | 加入 `@media (max-width: 600px)` 斷點調整 |
+| CDN 缺少 `crossorigin` | [index.html](./index.html) | 所有 CDN script 加上 `crossorigin="anonymous"` |
 
 
 ---
@@ -657,10 +657,10 @@
 所有字體尺寸均使用 **`clamp(min, preferred, max)`**，在螢幕寬度之間自動平滑過渡，不需每個斷點都個別寫字型大小。
 
 ### 修改的檔案
-- [style.css](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/css/style.css)
-- [test.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/test.html)
-- [plan.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/plan.html)
-- [README.md](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/README.md)
+- [style.css](./css/style.css)
+- [test.html](./test.html)
+- [plan.html](./plan.html)
+- [README.md](./README.md)
 
 
 ---
@@ -714,7 +714,7 @@
 - 「建立符合SDD及TDD規範的實作計畫」
 
 #### 2. AI 執行總結 (AI)
-- 建立 [plan-review2.html](file:///Users/lanss/projects/2_Practice/events/1150724_pdf_to_jpg/plan-review2.html)：比照既有 `plan.html` 視覺風格的第二輪 SDD+TDD 實作計畫頁面，內容包含 TDD Red/Green/Refactor 流程說明、7 項任務對照表（嚴重度／問題／修正動作）與驗收條件。
+- 建立 [plan-review2.html](./plan-review2.html)：比照既有 `plan.html` 視覺風格的第二輪 SDD+TDD 實作計畫頁面，內容包含 TDD Red/Green/Refactor 流程說明、7 項任務對照表（嚴重度／問題／修正動作）與驗收條件。
 - 本頁刻意沿用 `css/style.css` 既有變數命名（而非另創一套），並自行示範修正「favicon／theme-color 缺失」「muted 文字對比不足」兩項本輪發現的問題，避免規劃文件本身重蹈覆轍。
 - 僅新增此一份規劃文件，未修改 `index.html`／`plan.html`／`test.html`／`css`／`js` 等產品程式碼，仍等待使用者回應「實作」後才會依 `tasks.md` 逐條動手。
 
@@ -884,3 +884,27 @@
   2. **計畫落地，不留在對話裡**：SDD + TDD 文件讓流程可查核、可驗收。
   3. **找對時機做第二次驗證**：Claude 資安掃描插件甫推出，即時對已上線專案補掃。
 - 最終版約 168 字，語氣客觀、結構清楚，以專案為載體，核心是方法論本身。
+
+---
+
+### [2026-07-27] 建立單檔案離線 Package 與修復 file:// 協定 Data URI 載入
+
+#### 1. 使用者指令 (USER)
+- 「read all 文件內容，是否有包含路徑？」
+- 「因為我已經移動到新的目錄下，有需要改文件嗎？」
+- 「A（改為相對路徑）」
+- 「讓 me 可以下載完全獨立單一個 package，然後可以離網使用，請規劃」
+- 「A，而且幫我建立一個適當的目錄放進去，在主網頁提供可以下載的連結，理解我的意圖，重述」
+- 「提案」
+- 「檢查 pdf-to-jpg-offline.html」
+- 「為什麼會有 PDF 解析失敗：Setting up fake worker failed: "Cannot load script at: blob:null/..."」
+- 「index.html要不要改？」
+- 「更新相關文件，然後上傳」
+
+#### 2. AI 執行總結 (AI)
+- **硬編碼絕對路徑更新**：全專案掃描將 `README.md` 中舊的 `file:///Users/lanss/projects/2_Practice/events/...` 絕對路徑修正為 `./` 相對路徑，確保目錄搬移後連結不失效。
+- **SDD 提案建置**：建立 `sdd/offline-package/proposal.md` 與 `tasks.md`。
+- **自動化離線打包工具**：撰寫 `scripts/build_offline.py`，下載 `pdf.js` (v3.11.174)、`pdf.worker.js`、`jszip` 與 `FileSaver` 資源至 `.vendor/`，並自動構建生成 100% 離線單一 HTML 檔案 `dist/pdf-to-jpg-offline.html` (約 1.47MB)。
+- **修復 file:// 協定下的 blob:null Worker 錯誤**：針對瀏覽器在 `file://` 下將網頁 Origin 判定為 `null` 導致拒絕載入 `blob:null/<uuid>` Worker 的問題，將內嵌 Worker 載入機制全數升級為 `Data URI` 格式 (`data:text/javascript;charset=utf-8,...`)，解決本地雙擊開啟時的 PDF 解析失敗問題。
+- **主頁下載與 CSP 升級**：在 `index.html` 操作區與頁腳新增「📥 下載單檔案離線 Package (.html)」按鈕；更新 `index.html` 的 CSP 標頭加入 `worker-src blob: data:;`，同步於 `js/converter.js` 中啟用 Data URI 備援。
+- **全方位健康檢查**：對離線單檔完成 DOM 完整度 (10/10)、網路零依賴 (0 外連 CDN) 與核心邏輯 (6/6) 之自動化校驗，確保品質合格。

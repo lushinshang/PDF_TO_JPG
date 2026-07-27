@@ -16,7 +16,7 @@
              font-src   'self' https://fonts.gstatic.com;
              img-src    'self' data: blob:;
              connect-src 'self' https://cdnjs.cloudflare.com;
-             worker-src blob:;">
+             worker-src blob: data:;">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,6 +51,9 @@
         </div>
         <a class="scan-badge" href="test.html#auto-scan" title="查看自動化資安掃描報告詳情">
           🔍 自動化資安掃描：0 個發現
+        </a>
+        <a class="offline-badge" href="dist/pdf-to-jpg-offline.html" download="pdf-to-jpg-offline.html" title="點擊下載單一 HTML 檔案，可 100% 無網環境離線使用 (約 1.5MB)">
+          📥 下載單檔案離線 Package (.html)
         </a>
       </div>
       <h1>PDF 轉 JPG 圖片工具</h1>
@@ -120,6 +123,8 @@
     <footer>
       <p>
         PDF to JPG Web Application · GitHub Pages Ready · Open Source
+        <span style="margin: 0 0.5rem;">·</span>
+        <a href="dist/pdf-to-jpg-offline.html" download="pdf-to-jpg-offline.html">📦 下載離線單檔 Package</a>
         <span style="margin: 0 0.5rem;">·</span>
         <a href="test.html">🧪 單元測試與資安報告</a>
         <span style="margin: 0 0.5rem;">·</span>

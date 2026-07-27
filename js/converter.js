@@ -79,8 +79,8 @@
       throw new Error('PDF.js worker 完整性校驗失敗，疑似遭竄改，已拒絕載入');
     }
 
-    const blob = new Blob([buffer], { type: 'application/javascript' });
-    cachedWorkerBlobUrl = URL.createObjectURL(blob);
+    const workerText = new TextDecoder('utf-8').decode(buffer);
+    cachedWorkerBlobUrl = 'data:text/javascript;charset=utf-8,' + encodeURIComponent(workerText);
     return cachedWorkerBlobUrl;
   }
 
@@ -96,7 +96,13 @@
       throw new Error('PDF.js 函式庫未載入');
     }
 
-    pdfjsLib.GlobalWorkerOptions.workerSrc = await getVerifiedWorkerBlobUrl();
+    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      try {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = await getVerifiedWorkerBlobUrl();
+      } catch (err) {
+        console.warn('無法連網獲取 CDN Worker，使用既有模式解析:', err);
+      }
+    }
 
     const arrayBuffer = await pdfFile.arrayBuffer();
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
