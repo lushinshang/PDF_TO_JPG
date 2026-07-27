@@ -63,8 +63,8 @@
     <main>
       <!-- Upload Zone -->
       <section aria-label="上傳區域">
-        <!-- tabindex 讓鍵盤使用者可以 Tab 到此區域 -->
-        <div class="upload-card" id="drop-zone" role="button" tabindex="0"
+        <!-- tabindex 讓鍵盤使用者可以 Tab 到此區域；label 原生觸發 file-input 點擊 -->
+        <label class="upload-card" id="drop-zone" tabindex="0"
              aria-label="點擊或拖曳 PDF 檔案至此區域以上傳">
           <input type="file" id="file-input" accept=".pdf"
                  aria-label="選擇 PDF 檔案">
@@ -78,7 +78,7 @@
           </div>
           <div class="upload-title">點擊選擇檔案 或 拖曳 PDF 至此處</div>
           <div class="upload-subtitle">僅支援單檔 PDF 上傳</div>
-        </div>
+        </label>
 
         <!-- Error Banner (flex 由 JS 控制) -->
         <div class="error-banner" id="error-banner" role="alert" aria-live="assertive">
