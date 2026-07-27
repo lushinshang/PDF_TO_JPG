@@ -30,15 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── 關閉錯誤 Banner ───────────────────────────────────────
   errorClose.addEventListener('click', hideError);
 
-  // ── 拖曳上傳事件（dragCounter 防閃爍）────────────────────
-  dropZone.addEventListener('click', (e) => {
-    // 只有當點擊目標不是 fileInput 本身時，才手動觸發 click，防止 DOM 事件冒泡二次觸發
-    if (e.target !== fileInput) {
-      fileInput.click();
-    }
-  });
-
-  // role="button" 的自訂元素不會內建鍵盤觸發行為，需自行處理 Enter/Space
+  // ── 點擊選檔由瀏覽器原生 file-input 透明覆蓋層處理 ────────
+  // 鍵盤無障礙：role="button" 的自訂元素需自行處理 Enter/Space
   dropZone.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
       e.preventDefault();
@@ -75,11 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     dropZone.classList.remove('drag-over');
     const files = e.dataTransfer ? e.dataTransfer.files : null;
     handleFilesSelected(files);
-  });
-
-  fileInput.addEventListener('click', (e) => {
-    e.stopPropagation();
-    e.target.value = '';
   });
 
   fileInput.addEventListener('change', (e) => {
